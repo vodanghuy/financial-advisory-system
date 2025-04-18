@@ -8,6 +8,8 @@ var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var rolesRouter = require('./routes/roles');
+var authRouter = require('./routes/auth');
 
 var app = express();
 mongoose.connect("mongodb://localhost:27017/financial-advisory")
@@ -30,7 +32,8 @@ app.use(cors({
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/roles', rolesRouter);
+app.use('/auth', authRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -44,7 +47,10 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).send({
+    success:false,
+    message: err.message
+  });
 });
 
 module.exports = app;
