@@ -1,36 +1,41 @@
+import 'package:app_interface/screens/home.dart';
+import 'package:app_interface/screens/login.dart';
+import 'package:app_interface/screens/register.dart';
+import 'package:app_interface/services/authService.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AuthService _authService = AuthService();
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Flutter Login',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: '/',
+      routes: {
+        '/':
+            (context) => FutureBuilder<bool>(
+              future: _authService.isLoggedIn(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.data == true) {
+                  return HomeScreen();
+                } else {
+                  return LoginScreen();
+                }
+              },
+            ),
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
+        '/register': (context) => RegisterScreen(),
+        // '/admin': (context) => TrangChuAdmin(),
+      },
     );
   }
 }

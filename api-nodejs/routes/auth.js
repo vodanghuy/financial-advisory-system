@@ -8,13 +8,14 @@ let {check_authentication, check_authorization} = require("../utils/check_auth")
 let {validate, UserValidation} = require("../utils/validator")
 let crypto = require('crypto')
 let mailer = require('../utils/mailer')
+let roleController = require("../controllers/roles")
 
 
 router.post('/login', UserValidation, validate, async function(req, res, next) {
     try {
-        let username = req.body.username
+        let email = req.body.email
         let password = req.body.password
-        let result = await userController.checkLogin(username, password)
+        let result = await userController.checkLogin(email, password)
         let exp = new Date(Date.now() + 3600 * 1000)
         if(result) {
         // Create token
@@ -31,10 +32,13 @@ router.post('/login', UserValidation, validate, async function(req, res, next) {
             }
         )
             res.status(200).send({
-                success: true,
-                message: "Đăng nhập thành công",
-                data: token,
-                user: result
+                email: result.email,
+                tel: result.tel,
+                dateOfBirth: result.dateOfBirth,
+                role: result.role.name,
+                fullName: result.fullName,
+                gender: result.gender,
+                token: token
             })
         } else {
             res.status(401).send({

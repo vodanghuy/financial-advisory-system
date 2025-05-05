@@ -40,7 +40,7 @@ let userSchema = mongoose.Schema({
     },
     role:{
         type: mongoose.Types.ObjectId,
-        rel: 'role',
+        ref: 'role',
         required: true
     }
 },{

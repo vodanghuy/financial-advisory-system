@@ -32,10 +32,7 @@ module.exports = {
     },
     // Get all users
     getAllUsers: async function() {
-        let users = await userSchema.find({ isDeleted: false }).populate({
-            path: 'role',
-            select: 'name'
-        })
+        let users = await userSchema.find({ isDeleted: false }).populate('role')
         return users
     },
     // Get user by ID
@@ -96,14 +93,14 @@ module.exports = {
         return user
     },
     // Check login
-    checkLogin: async function(username, password)
+    checkLogin: async function(email, password)
     {
-        let user = await userSchema.findOne({ username: username }).populate({
+        let user = await userSchema.findOne({ email: email }).populate({
             path: 'role',
             select: 'name'
         })
         if(!user) {
-            throw new Error("Tên tài khoản hoặc mật khẩu không hợp lệ")
+            throw new Error("Email hoặc mật khẩu không hợp lệ")
         }
         else
         {
@@ -112,7 +109,7 @@ module.exports = {
             }
             else
             {
-                throw new Error("Tên tài khoản hoặc mật khẩu không hợp lệ")
+                throw new Error("Email hoặc mật khẩu không hợp lệ")
             }
         }
     },
